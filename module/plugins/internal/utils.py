@@ -2,6 +2,8 @@
 #
 #@TODO: Move to utils directory 0.4.10
 
+from __future__ import unicode_literals
+
 import datetime
 import htmlentitydefs
 import itertools
@@ -24,7 +26,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.03"
+    __version__ = "0.031"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -34,6 +36,12 @@ class utils(object):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+def dediacrit(text):
+    diak = "áäčďéěíĺľňóôöŕšťúůüýřžÁÄČĎÉĚÍĹĽŇÓÔÖŔŠŤÚŮÜÝŘŽ"
+    nodiak = "aacdeeillnooorstuuuyrzAACDEEILLNOOORSTUUUYRZ"
+    for x in range(0, len(nodiak)):
+        text = text.replace(diak[x], nodiak[x])
+    return text
 
 def lock(fn):
     def new(*args):
@@ -212,7 +220,7 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = url is old
 
-    url = html_unescape(decode(url).decode('unicode-escape'))
+    url = html_unescape(decode(dediacrit(url)).decode('unicode-escape'))
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
